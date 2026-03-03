@@ -13,6 +13,7 @@ export const eventsAtom=atom([{
       manager:"Yahash",
       date:"7 March 2026",
       coordinators:["name1","name2",],
+      is_complete:false,
       
 },])
 
@@ -33,5 +34,6 @@ export const setEventsAtom = atom(null, (get, set, data) => {
         manager:data.manager,
         date:data.date,
         coordinators:data.coordinators,
+        is_complete:false,
     }]);
 })
