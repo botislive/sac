@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+import {nanoid} from "nanoid";
 
 
 
@@ -6,9 +7,16 @@ export const sacMemAtom = atom([{
     name: "Tushar",
     post: "Club Manager",
     phone: "6301537173",
-}]);
+},
+   {
+    name: "Likitha",
+    post: "Club Manager",
+    phone: "8543490275",
+}
+]);
 
 export const eventsAtom=atom([{
+      id:nanoid(),
       club_name:"Music Club",
       event_title: "Sizziling Saturday",
       manager:"Yahash",
@@ -31,12 +39,16 @@ export const setMemAtom = atom(null, (get, set, data) => {
 
 export const setEventsAtom = atom(null, (get, set, data) => {
     const currentlist=get(eventsAtom) 
+    const coordinators = (data.coordinators || []).map((coord) =>
+        typeof coord === "string" ? coord : coord?.name
+    ).filter(Boolean);
     set(eventsAtom, [...currentlist,{
+        id:nanoid(),
         club_name:data.club_name,
         event_title:data.event_title,
         manager:data.manager,
         date:data.event_date,
-        coordinators:data.coordinators,
+        coordinators,
         is_complete:false,
     }]);
 })
@@ -54,4 +66,44 @@ export const filteredEventsAtom = atom((get) => {
         if (filter === "completed") return event.is_complete;
         return true; 
     });
+});
+
+export const EventToggleAtom = atom(null, (get, set, eventId) => {
+    const currentlist=get(eventsAtom)
+    set(eventsAtom, currentlist.map(event => {
+        if (event.id === eventId) {
+            return { ...event, is_complete: !event.is_complete };
+        }
+        return event;
+    }));
+
+})
+
+
+export const EventDeleteAtom = atom(null, (get, set, eventId) => {
+    const currentList = get(eventsAtom);
+    
+    const updatedList = currentList.filter(event => event.id !== eventId);
+    
+    set(eventsAtom, updatedList);
+});
+
+export const EventEditAtom = atom(null, (get, set, data) => {
+    const currentList = get(eventsAtom);
+    const coordinators = (data.coordinators || []).map((coord) =>
+        typeof coord === "string" ? coord : coord?.name
+    ).filter(Boolean);
+
+    const updatedList = currentList.map((event) => {
+        if (event.id !== data.id) return event;
+        return {
+            ...event,
+            club_name: data.club_name,
+            event_title: data.event_title,
+            date: data.date,
+            coordinators,
+        };
+    });
+
+    set(eventsAtom, updatedList);
 });
