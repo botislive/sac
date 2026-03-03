@@ -1,6 +1,7 @@
 import { atom } from "jotai";
 
 
+
 export const sacMemAtom = atom([{
     name: "Tushar",
     post: "Club Manager",
@@ -16,6 +17,8 @@ export const eventsAtom=atom([{
       is_complete:false,
       
 },])
+
+
 
 export const setMemAtom = atom(null, (get, set, data) => {
     const currentlist=get(sacMemAtom)
@@ -37,3 +40,18 @@ export const setEventsAtom = atom(null, (get, set, data) => {
         is_complete:false,
     }]);
 })
+
+
+export const statusFilterAtom = atom("all");
+
+
+export const filteredEventsAtom = atom((get) => {
+    const allEvents = get(eventsAtom);
+    const filter = get(statusFilterAtom);
+
+    return allEvents.filter(event => {
+        if (filter === "upcoming") return !event.is_complete;
+        if (filter === "completed") return event.is_complete;
+        return true; 
+    });
+});
