@@ -2,6 +2,7 @@ import './App.css'
 import { sacMemAtom } from './atoms/userAtom' 
 import { useAtom } from 'jotai'
 import MemberForm from './components/MemberForm.jsx'
+import EventForm from './components/EventForm.jsx'
 
 function App() {
         const [members]=useAtom(sacMemAtom)
@@ -22,6 +23,10 @@ function App() {
          <br />
          <div>
           <MemberForm />
+         </div>
+         <br />
+         <div>
+            <EventForm/>
          </div>
        </div>
     </>
