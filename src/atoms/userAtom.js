@@ -13,7 +13,7 @@ export const eventsAtom=atom([{
       event_title: "Sizziling Saturday",
       manager:"Yahash",
       date:"7 March 2026",
-      coordinators:["name1","name2",],
+      coordinators:["Likitha","Tushar",],
       is_complete:false,
       
 },])
@@ -35,7 +35,7 @@ export const setEventsAtom = atom(null, (get, set, data) => {
         club_name:data.club_name,
         event_title:data.event_title,
         manager:data.manager,
-        date:data.date,
+        date:data.event_date,
         coordinators:data.coordinators,
         is_complete:false,
     }]);
