@@ -6,6 +6,8 @@ import {nanoid} from "nanoid";
 export const sacMemAtom = atom([{
     name: "Tushar",
     post: "Club Manager",
+    year: "III",
+    branch: "CSE",
     phone: "6301537173",
 },
    {
@@ -26,6 +28,11 @@ export const eventsAtom=atom([{
       
 },])
 
+export const clubs = atom([
+        { name: "Radhakrishnan Literary club", faculty: "Mrs.Hima Bindu Madam", manager: "Yellapu Tushar" },
+        { name: "Lata Mangeshkar Dance Club", faculty: "Mrs.Sravanthi", manager: "Likitha" }
+    ])
+
 
 
 export const setMemAtom = atom(null, (get, set, data) => {
@@ -33,7 +40,9 @@ export const setMemAtom = atom(null, (get, set, data) => {
     set(sacMemAtom, [...currentlist,{
         name:data.name,
         post:data.post,
-        phone:data.post,
+        year:data.year,
+        branch:data.branch,
+        phone:data.phone,
     }]);
 });
 

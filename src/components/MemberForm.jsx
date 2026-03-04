@@ -6,23 +6,38 @@ const MemberForm = () => {
     const [name, setName] = useState("");
     const [post, setPost] = useState("");
     const [phone, setPhone] = useState("");
+    const [year, setYear] = useState("");
+    const [branch, setBranch] = useState("");
 
-
-    const roles = [
+  const roles = [
     "President", "Vice President", "Secretary", "Core Lead", 
     "Core Team", "Club Manager", "Joint Secretary", "Club Coordinator"
   ]
+
+  const years = ["I", "II", "III", "IV"];
+
+  const branches = [
+    "CSE",
+    "CSE-AI",
+    "IT",
+    "ECE",
+    "EEE",
+    "ME",
+    "CE"
+  ];
 
   const [,setMember]=useAtom(setMemAtom)
 
   const formhandler=(e)=>{
     e.preventDefault()
-    if(name && post && phone){
-        setMember({name,post,phone})
-        console.log(name,post,phone)
+    if(name && post && phone && year && branch){
+        setMember({name,post,phone,year,branch})
+        console.log(name,post,phone,year,branch)
         setName("")
         setPost("")
         setPhone("")
+        setYear("")
+        setBranch("")
     }
     
 }
@@ -50,7 +65,40 @@ const MemberForm = () => {
                         ))}
                         </select>
                     </div>
+                           
                     <input value={phone} onChange={(e)=>setPhone(e.target.value)} type="text" placeholder='Enter your phone number' />
+
+                    <div className="input-group">
+                        <label htmlFor="year-select">Select Year: </label>
+                        <select
+                        value={year}
+                        onChange={(e) => setYear(e.target.value)}
+                        id="year-select"
+                        >
+                        <option value="" disabled>-- Choose Year --</option>
+                        {years.map((yearOption) => (
+                            <option key={yearOption} value={yearOption}>
+                            {yearOption}
+                            </option>
+                        ))}
+                        </select>
+                    </div>
+
+                    <div className="input-group">
+                        <label htmlFor="branch-select">Select Branch: </label>
+                        <select
+                        value={branch}
+                        onChange={(e) => setBranch(e.target.value)}
+                        id="branch-select"
+                        >
+                        <option value="" disabled>-- Choose Branch --</option>
+                        {branches.map((branchOption) => (
+                            <option key={branchOption} value={branchOption}>
+                            {branchOption}
+                            </option>
+                        ))}
+                        </select>
+                    </div>
                     <button type='submit'>Submit</button>
                 </form>
             </div>

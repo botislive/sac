@@ -1,10 +1,12 @@
 import { useAtomValue } from "jotai";
 import { eventsAtom } from "../atoms/userAtom";
 import Calendar from "react-calendar";
+import { useNavigate } from "react-router-dom";
 import "react-calendar/dist/Calendar.css";
 
 function EventCalendar() {
   const events = useAtomValue(eventsAtom);
+  const navigate = useNavigate();
 
  
   const getFormattedDate = (date) => {
@@ -25,6 +27,15 @@ function EventCalendar() {
               className={`text-[10px] px-1 py-0.5 rounded truncate text-white shadow-sm
                 ${event.is_complete ? 'bg-green-500/80' : 'bg-blue-600/80'}`}
               title={event.event_title}
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate(`/details/${event.id}`)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  navigate(`/details/${event.id}`);
+                }
+              }}
             >
               {event.event_title}
             </div>

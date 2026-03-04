@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { setEventsAtom, sacMemAtom } from "../atoms/userAtom";
-import { useAtom } from "jotai";
+import { setEventsAtom, sacMemAtom, clubs } from "../atoms/userAtom";
+import { useAtom, useAtomValue } from "jotai";
 
 function EventForm() {
     const [members] = useAtom(sacMemAtom); 
     const [, setEvents] = useAtom(setEventsAtom);
+    const clubList = useAtomValue(clubs);
     
     const [club_name, setClub_name] = useState("");
     const [event_title, setEvent_title] = useState("");
@@ -14,10 +15,7 @@ function EventForm() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCoordinators, setSelectedCoordinators] = useState([]);
 
-    const clubs = [
-        { name: "Radhakrishnan Literary club", faculty: "Mrs.Hima Bindu Madam", manager: "Yellapu Tushar" },
-        { name: "Lata Mangeshkar Dance Club", faculty: "Mrs.Sravanthi", manager: "Likitha" }
-    ];
+
 
     
     const filteredMembers = (members || []).filter(member => 
@@ -64,7 +62,7 @@ function EventForm() {
                 <label><strong>Select Club:</strong></label><br />
                 <select value={club_name} onChange={(e) => setClub_name(e.target.value)} required>
                     <option value="" disabled>-- Choose a Club --</option>
-                    {clubs.map((club) => (
+                    {(clubList || []).map((club) => (
                         <option key={club.name} value={club.name}>{club.name}</option>
                     ))}
                 </select>
