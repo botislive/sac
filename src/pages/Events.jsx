@@ -1,5 +1,6 @@
 import EventForm from "../components/EventForm"
 import EventDetails from "../components/EventDetails"
+import EventCalendar from "../components/EventCalendar"
 
 function Events() {
   return (
@@ -14,6 +15,10 @@ function Events() {
                <br />
         <div>
             <EventDetails/>
+        </div>
+               <br />
+        <div>
+            <EventCalendar/>
         </div>
     </div>
   )
