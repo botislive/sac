@@ -11,6 +11,7 @@ import {
 import { useAtom, useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 function EventDetails({ eventId = null }) {
   const [filter, setFilter] = useState("all");
@@ -105,6 +106,7 @@ function EventDetails({ eventId = null }) {
       coordinators: editForm.coordinators,
     });
     cancelEdit();
+    toast.success("Event updated successfully");
   };
 
   const filteredMembers = (members || []).filter(
@@ -146,8 +148,8 @@ function EventDetails({ eventId = null }) {
               key={f}
               onClick={() => setFilter(f)}
               className={`px-4 py-2 rounded-md text-sm font-medium capitalize transition-all duration-200 ${filter === f
-                  ? "bg-gray-800 text-white shadow-sm ring-1 ring-gray-700"
-                  : "text-gray-400 hover:text-gray-200 hover:bg-gray-800/50"
+                ? "bg-gray-800 text-white shadow-sm ring-1 ring-gray-700"
+                : "text-gray-400 hover:text-gray-200 hover:bg-gray-800/50"
                 }`}
             >
               {f}
@@ -161,8 +163,8 @@ function EventDetails({ eventId = null }) {
           <div
             key={event.id}
             className={`border rounded-xl p-5 hover:border-gray-600 transition-all duration-300 ${event.is_complete
-                ? "bg-gray-900/30 border-gray-800/50"
-                : "bg-gray-800/20 border-gray-700 hover:shadow-lg hover:shadow-blue-900/10"
+              ? "bg-gray-900/30 border-gray-800/50"
+              : "bg-gray-800/20 border-gray-700 hover:shadow-lg hover:shadow-blue-900/10"
               }`}
           >
             {editingEventId === event.id ? (
@@ -315,10 +317,13 @@ function EventDetails({ eventId = null }) {
             {!isSingleEventView && (
               <div className="flex flex-wrap items-center gap-3 mt-5 pt-4 border-t border-gray-800/80">
                 <button
-                  onClick={() => eventToggle(event.id)}
+                  onClick={() => {
+                    eventToggle(event.id);
+                    toast.success(`Event marked as ${event.is_complete ? 'Incomplete' : 'Complete'}`);
+                  }}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${event.is_complete
-                      ? "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
-                      : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
+                    ? "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
+                    : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
                     }`}
                 >
                   {event.is_complete ? "✓ Completed" : "Mark Done"}
@@ -357,6 +362,7 @@ function EventDetails({ eventId = null }) {
                       onClick={() => {
                         if (window.confirm(`Delete "${event.event_title}"?`)) {
                           eventDelete(event.id);
+                          toast.success("Event deleted successfully");
                         }
                       }}
                       className="ml-auto px-3 py-1.5 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 rounded-md text-sm font-medium transition-colors"

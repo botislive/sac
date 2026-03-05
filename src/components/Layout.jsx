@@ -1,6 +1,7 @@
 import { Outlet, Link, useLocation, Navigate } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { authAtomWithStorage } from '../atoms/authAtom'
+import { AnimatePresence, motion } from 'framer-motion'
 
 function Layout() {
     const [isAuthenticated, setIsAuthenticated] = useAtom(authAtomWithStorage)
@@ -39,8 +40,8 @@ function Layout() {
                                 key={item.name}
                                 to={item.href}
                                 className={`block px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${isActive
-                                        ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-sm'
-                                        : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
+                                    ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-sm'
+                                    : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
                                     }`}
                             >
                                 {item.name}
@@ -73,9 +74,20 @@ function Layout() {
                 </header>
 
                 {/* Page Content */}
-                <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-gray-950">
-                    <div className="max-w-6xl mx-auto">
-                        <Outlet />
+                <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-gray-950 flex flex-col">
+                    <div className="max-w-6xl mx-auto w-full flex-1">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={location.pathname}
+                                initial={{ opacity: 0, y: 15 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -15 }}
+                                transition={{ duration: 0.25, ease: 'easeInOut' }}
+                                className="h-full"
+                            >
+                                <Outlet />
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
                 </main>
             </div>

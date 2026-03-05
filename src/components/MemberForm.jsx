@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { setMemAtom } from "../atoms/userAtom";
 import { useAtom } from "jotai";
+import { toast } from "sonner";
 
 const MemberForm = () => {
     const [name, setName] = useState("");
@@ -25,11 +26,14 @@ const MemberForm = () => {
         e.preventDefault()
         if (name && post && phone && year && branch) {
             setMember({ name, post, phone, year, branch })
+            toast.success("Member registered successfully!");
             setName("")
             setPost("")
             setPhone("")
             setYear("")
             setBranch("")
+        } else {
+            toast.error("Please fill all required fields");
         }
     }
 

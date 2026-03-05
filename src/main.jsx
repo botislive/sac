@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Toaster } from 'sonner'
 import Home from './pages/Home.jsx'
 import LandingPage from './pages/LandingPage.jsx'
 import Events from './pages/Events.jsx'
@@ -11,6 +12,7 @@ import Layout from './components/Layout.jsx'
 
 createRoot(document.getElementById('root')).render(
     <BrowserRouter>
+        <Toaster theme="dark" position="bottom-right" richColors />
         <Routes>
             <Route path='/login' element={<Login />} />
 

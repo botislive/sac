@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 import { useAtom } from "jotai"
 import { eventsAtom } from "../atoms/userAtom"
 import { sacMemAtom } from "../atoms/userAtom"
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 
 function Home() {
   const [events] = useAtom(eventsAtom)
@@ -13,6 +14,18 @@ function Home() {
     { label: 'Completed Events', value: events.filter(e => e.is_complete).length || 0, color: 'from-emerald-500 to-teal-600' },
     { label: 'Active Members', value: members.length || 0, color: 'from-orange-500 to-red-600' },
   ]
+
+  const clubDistribution = events.reduce((acc, event) => {
+    acc[event.club_name] = (acc[event.club_name] || 0) + 1;
+    return acc;
+  }, {});
+
+  const pieData = Object.keys(clubDistribution).map(key => ({
+    name: key,
+    value: clubDistribution[key]
+  }));
+
+  const COLORS = ['#3b82f6', '#10b981', '#6366f1', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
   return (
     <div className="space-y-6">
@@ -34,6 +47,39 @@ function Home() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="bg-gray-900 rounded-xl p-6 border border-gray-800 shadow-lg mt-8">
+        <h2 className="text-xl font-semibold text-white mb-6">Events by Club</h2>
+        <div className="h-64 w-full">
+          {pieData.length > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  dataKey="value"
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  labelLine={false}
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{ backgroundColor: '#111827', borderColor: '#374151', color: '#fff', borderRadius: '0.5rem' }}
+                  itemStyle={{ color: '#e5e7eb' }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-full flex items-center justify-center text-gray-500">No events data available</div>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { setEventsAtom, sacMemAtom, clubs } from "../atoms/userAtom";
 import { useAtom, useAtomValue } from "jotai";
+import { toast } from "sonner";
 
 function EventForm() {
     const [members] = useAtom(sacMemAtom);
@@ -39,6 +40,7 @@ function EventForm() {
         };
 
         setEvents(eventData);
+        toast.success("Event added successfully!");
 
         setClub_name("");
         setEvent_title("");

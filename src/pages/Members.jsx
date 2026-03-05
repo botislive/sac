@@ -1,12 +1,30 @@
-import { useAtom } from "jotai"
-import { sacMemAtom } from "../atoms/userAtom"
+import { useState } from "react"
+import { useAtom, useAtomValue } from "jotai"
+import { sacMemAtom, eventsAtom } from "../atoms/userAtom"
 import MemberForm from '../components/MemberForm'
 
 function Members() {
   const [members] = useAtom(sacMemAtom)
+  const allEvents = useAtomValue(eventsAtom)
+  const [selectedMember, setSelectedMember] = useState(null)
+
+  const getMemberEvents = (memberName) => {
+    const memberEvents = allEvents.filter(event => {
+      // Handle both string and object coordinators
+      const coords = event.coordinators || [];
+      return coords.some(coord =>
+        (typeof coord === 'string' ? coord : coord.name) === memberName
+      );
+    });
+
+    return {
+      upcoming: memberEvents.filter(e => !e.is_complete),
+      past: memberEvents.filter(e => e.is_complete)
+    };
+  }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 relative">
       <div>
         <h1 className="text-3xl font-bold text-white">Members Directory</h1>
         <p className="text-gray-400 mt-1">Manage and register SAC team members.</p>
@@ -35,7 +53,11 @@ function Members() {
             {members.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {members.map((member, i) => (
-                  <div key={i} className="border border-gray-700 bg-gray-800/30 rounded-xl p-5 hover:border-gray-500 transition-colors group">
+                  <div
+                    key={i}
+                    className="border border-gray-700 bg-gray-800/30 rounded-xl p-5 hover:border-blue-500/50 hover:bg-gray-800/50 transition-all cursor-pointer group shadow-sm hover:shadow-lg hover:-translate-y-1"
+                    onClick={() => setSelectedMember(member)}
+                  >
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <h3 className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">{member.name}</h3>
@@ -74,6 +96,109 @@ function Members() {
           </div>
         </div>
       </div>
+
+      {/* Member Details Modal */}
+      {selectedMember && (() => {
+        const events = getMemberEvents(selectedMember.name);
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedMember(null)}>
+            <div
+              className="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="p-6 border-b border-gray-800 bg-gray-900 flex justify-between items-start sticky top-0">
+                <div>
+                  <h2 className="text-2xl font-bold text-white mb-1">{selectedMember.name}</h2>
+                  <div className="flex items-center gap-3 text-sm text-gray-400">
+                    <span className="text-emerald-400 font-medium">{selectedMember.post}</span>
+                    <span className="w-1 h-1 rounded-full bg-gray-600"></span>
+                    <span>{selectedMember.branch || "Unspecified"} - {selectedMember.year || "N/A"} Year</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedMember(null)}
+                  className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="p-6 overflow-y-auto mix-blend-normal flex-1 bg-gray-900/50" style={{ scrollbarWidth: 'thin', scrollbarColor: '#374151 transparent' }}>
+                <div className="space-y-8">
+                  {/* Upcoming Events */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                      Upcoming Events
+                      <span className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full text-xs ml-2 font-mono">
+                        {events.upcoming.length}
+                      </span>
+                    </h3>
+
+                    {events.upcoming.length > 0 ? (
+                      <div className="grid gap-3">
+                        {events.upcoming.map(event => (
+                          <div key={event.id} className="bg-gray-800/40 border border-gray-700 rounded-xl p-4 flex justify-between items-center group hover:border-blue-500/30 transition-colors">
+                            <div>
+                              <div className="font-semibold text-gray-200 group-hover:text-blue-400 transition-colors">{event.event_title}</div>
+                              <div className="text-sm text-gray-500 mt-1">{event.club_name}</div>
+                            </div>
+                            <div className="text-sm px-3 py-1 rounded bg-gray-900 border border-gray-700 text-gray-400 whitespace-nowrap">
+                              {event.date}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-6 bg-gray-800/20 border border-gray-800 border-dashed rounded-xl">
+                        <p className="text-gray-500 text-sm">No upcoming events scheduled.</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Past Events */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                      Past Events
+                      <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full text-xs ml-2 font-mono">
+                        {events.past.length}
+                      </span>
+                    </h3>
+
+                    {events.past.length > 0 ? (
+                      <div className="grid gap-3">
+                        {events.past.map(event => (
+                          <div key={event.id} className="bg-gray-800/20 border border-gray-800 rounded-xl p-4 flex justify-between items-center bg-gray-900/30">
+                            <div>
+                              <div className="font-medium text-gray-400">{event.event_title}</div>
+                              <div className="text-sm text-gray-600 mt-1">{event.club_name}</div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span className="text-xs text-gray-500 whitespace-nowrap">{event.date}</span>
+                              <span className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 p-1 rounded-full flex items-center justify-center">
+                                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-6 bg-gray-800/20 border border-gray-800 border-dashed rounded-xl">
+                        <p className="text-gray-500 text-sm">No past events recorded.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   )
 }
