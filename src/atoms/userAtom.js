@@ -9,6 +9,7 @@ export const sacMemAtom = atom([{
     year: "III",
     branch: "CSE",
     phone: "6301537173",
+    events:["event_ID_1", "event_ID_2"]
 },
    {
     name: "Likitha",
