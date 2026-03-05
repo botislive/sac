@@ -130,373 +130,250 @@ function EventDetails({ eventId = null }) {
     }));
 
   return (
-    <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
-      <h1>{isSingleEventView ? "Event Detail Page" : "Event Details"}</h1>
-
+    <div className="space-y-6">
       {isSingleEventView && (
-        <div style={{ marginBottom: "16px" }}>
-          <Link to="/events" style={{ color: "#007bff", textDecoration: "none" }}>
-            ← Back to Events
+        <div className="mb-4">
+          <Link to="/events" className="text-blue-400 hover:text-blue-300 flex items-center gap-2 transition-colors">
+            <span>&larr;</span> Back to Events
           </Link>
         </div>
       )}
 
       {!isSingleEventView && (
-        <div style={{ marginBottom: "20px", display: "flex", gap: "10px" }}>
-          <button onClick={() => setFilter("all")} style={{ fontWeight: filter === "all" ? "bold" : "normal" }}>
-            All
-          </button>
-          <button
-            onClick={() => setFilter("upcoming")}
-            style={{ fontWeight: filter === "upcoming" ? "bold" : "normal" }}
-          >
-            Upcoming
-          </button>
-          <button
-            onClick={() => setFilter("completed")}
-            style={{ fontWeight: filter === "completed" ? "bold" : "normal" }}
-          >
-            Completed
-          </button>
+        <div className="flex bg-gray-900/50 p-1 rounded-lg w-fit border border-gray-800">
+          {["all", "upcoming", "completed"].map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`px-4 py-2 rounded-md text-sm font-medium capitalize transition-all duration-200 ${filter === f
+                  ? "bg-gray-800 text-white shadow-sm ring-1 ring-gray-700"
+                  : "text-gray-400 hover:text-gray-200 hover:bg-gray-800/50"
+                }`}
+            >
+              {f}
+            </button>
+          ))}
         </div>
       )}
 
-      <div>
+      <div className="space-y-4">
         {eventsToRender.map((event) => (
           <div
             key={event.id}
-            style={{
-              border: "1px solid #ddd",
-              padding: "15px",
-              margin: "15px 0",
-              borderRadius: "8px",
-              boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-            }}
+            className={`border rounded-xl p-5 hover:border-gray-600 transition-all duration-300 ${event.is_complete
+                ? "bg-gray-900/30 border-gray-800/50"
+                : "bg-gray-800/20 border-gray-700 hover:shadow-lg hover:shadow-blue-900/10"
+              }`}
           >
             {editingEventId === event.id ? (
-              <>
-                <p>
-                  <strong>Club Name:</strong>{" "}
-                  <select
-                    value={editForm.club_name}
-                    onChange={(e) => setEditForm((prev) => ({ ...prev, club_name: e.target.value }))}
-                    style={{ marginLeft: "8px", padding: "4px 8px" }}
-                  >
-                    <option value="" disabled>
-                      -- Select Club --
-                    </option>
-                    {availableClubs.map((clubName) => (
-                      <option key={clubName} value={clubName}>
-                        {clubName}
-                      </option>
-                    ))}
-                  </select>
-                </p>
-                <p>
-                  <strong>Event Title:</strong>{" "}
-                  <input
-                    type="text"
-                    value={editForm.event_title}
-                    onChange={(e) => setEditForm((prev) => ({ ...prev, event_title: e.target.value }))}
-                    style={{ marginLeft: "8px", padding: "4px 8px" }}
-                  />
-                </p>
-                <p>
-                  <strong>Event Date:</strong>{" "}
-                  <input
-                    type="date"
-                    value={editForm.date}
-                    onChange={(e) => setEditForm((prev) => ({ ...prev, date: e.target.value }))}
-                    style={{ marginLeft: "8px", padding: "4px 8px" }}
-                  />
-                </p>
-              </>
+              <div className="space-y-4 mb-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Club Name</label>
+                    <select
+                      value={editForm.club_name}
+                      onChange={(e) => setEditForm((prev) => ({ ...prev, club_name: e.target.value }))}
+                      className="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white focus:ring-1 focus:ring-blue-500"
+                    >
+                      <option value="" disabled>-- Select Club --</option>
+                      {availableClubs.map((clubName) => (
+                        <option key={clubName} value={clubName}>{clubName}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Event Title</label>
+                    <input
+                      type="text"
+                      value={editForm.event_title}
+                      onChange={(e) => setEditForm((prev) => ({ ...prev, event_title: e.target.value }))}
+                      className="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white focus:ring-1 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Date</label>
+                    <input
+                      type="date"
+                      value={editForm.date}
+                      onChange={(e) => setEditForm((prev) => ({ ...prev, date: e.target.value }))}
+                      style={{ colorScheme: 'dark' }}
+                      className="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white focus:ring-1 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+              </div>
             ) : (
-              <>
-                <p>
-                  <strong>Club Name:</strong> {event.club_name}
-                </p>
-                <p>
-                  <strong>Event Title:</strong> {event.event_title}
-                </p>
-                <p>
-                  <strong>Event Date:</strong> {event.date}
-                </p>
-                <p>
-                  <strong>Status:</strong> {event.is_complete ? "Done" : "Pending"}
-                </p>
-              </>
+              <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3 className="text-xl font-bold text-white leading-tight">{event.event_title}</h3>
+                    {event.is_complete && (
+                      <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded text-xs font-semibold">Done</span>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+                    <div className="flex items-center gap-1.5 text-gray-400">
+                      <span className="text-indigo-400">Club: </span>
+                      <span>{event.club_name}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-gray-400">
+                      <span className="text-blue-400">&#128197;</span>
+                      <span>{event.date}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             )}
 
-            <div style={{ margin: "10px 0" }}>
-              <strong>Coordinators:</strong>
+            <div className={`mt-4 ${!isSingleEventView ? 'pt-4 border-t border-gray-800' : ''}`}>
               {editingEventId === event.id ? (
-                <div style={{ marginTop: "5px" }}>
+                <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-800">
+                  <label className="block text-xs font-medium text-gray-400 mb-2">Edit Coordinators</label>
                   <input
                     type="text"
                     placeholder="Search by name..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{ marginBottom: "10px", width: "100%", padding: "6px 8px" }}
+                    className="w-full bg-gray-950 border border-gray-700 rounded-t-lg px-3 py-2 text-sm text-white focus:ring-1 focus:ring-blue-500"
                   />
-                  <div
-                    style={{
-                      border: "1px solid #ccc",
-                      maxHeight: "140px",
-                      overflowY: "auto",
-                      padding: "10px",
-                      borderRadius: "5px",
-                      background: "#f9f9f9",
-                    }}
-                  >
+                  <div className="border border-t-0 border-gray-700 max-h-32 overflow-y-auto p-2 bg-gray-950 rounded-b-lg space-y-1">
                     {filteredMembers.map((member) => (
-                      <div
-                        key={member.name}
-                        style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "5px" }}
-                      >
+                      <label key={member.name} className="flex items-center gap-3 p-1.5 hover:bg-gray-800 rounded cursor-pointer">
                         <input
                           type="checkbox"
-                          id={`edit-coord-${event.id}-${member.name}`}
                           checked={editForm.coordinators.includes(member.name)}
                           onChange={() => toggleCoordinator(member.name)}
+                          className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
                         />
-                        <label htmlFor={`edit-coord-${event.id}-${member.name}`} style={{ cursor: "pointer" }}>
-                          {member.name} <span style={{ fontSize: "11px", color: "#666" }}>({member.post})</span>
-                        </label>
-                      </div>
+                        <span className="text-sm text-gray-300">{member.name} <span className="text-xs text-gray-500">({member.post})</span></span>
+                      </label>
                     ))}
                     {filteredMembers.length === 0 && (
-                      <p style={{ fontSize: "12px", color: "gray" }}>No members found</p>
+                      <p className="text-xs text-gray-500 py-2 text-center">No members found</p>
                     )}
                   </div>
-                  <div style={{ marginTop: "10px", display: "flex", flexWrap: "wrap", gap: "5px" }}>
+                  <div className="mt-3 flex flex-wrap gap-2">
                     {editForm.coordinators.map((name) => (
-                      <span
-                        key={name}
-                        style={{
-                          background: "#007bff",
-                          color: "white",
-                          padding: "2px 10px",
-                          borderRadius: "12px",
-                          fontSize: "12px",
-                        }}
-                      >
+                      <span key={name} className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-1 rounded text-xs flex items-center gap-1">
                         {name}
+                        <button type="button" onClick={() => toggleCoordinator(name)} className="text-blue-400 hover:text-white ml-1">&times;</button>
                       </span>
                     ))}
-                    {editForm.coordinators.length === 0 && <span style={{ color: "#888" }}>None</span>}
                   </div>
                 </div>
               ) : isSingleEventView ? (
-                <div style={{ marginTop: "8px", display: "grid", gap: "8px" }}>
-                  {getCoordinatorDetails(event).map(({ name, member }) => (
-                    <div
-                      key={name}
-                      style={{ border: "1px solid #e5e7eb", borderRadius: "6px", padding: "10px", background: "#fafafa" }}
-                    >
-                      <p>
-                        <strong>Name:</strong> {name}
-                      </p>
-                      <p>
-                        <strong>Post:</strong> {member?.post || "N/A"}
-                      </p>
-                      <p>
-                        <strong>Phone:</strong> {member?.phone || "N/A"}
-                      </p>
-                      <p>
-                        <strong>Year:</strong> {member?.year || "N/A"}
-                      </p>
-                      <p>
-                        <strong>Branch:</strong> {member?.branch || "N/A"}
-                      </p>
-                    </div>
-                  ))}
-                  {getCoordinatorDetails(event).length === 0 && <span style={{ color: "#888" }}>None</span>}
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-300 mb-3 border-b border-gray-800 pb-2">Student Coordinators</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {getCoordinatorDetails(event).map(({ name, member }) => (
+                      <div key={name} className="bg-gray-900 border border-gray-800 rounded-lg p-4 flex flex-col gap-1">
+                        <p className="text-white font-medium">{name}</p>
+                        <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs mt-2">
+                          <span className="text-gray-500">Post</span>
+                          <span className="text-gray-300 truncate text-right">{member?.post || "N/A"}</span>
+                          <span className="text-gray-500">Branch/Year</span>
+                          <span className="text-gray-300 text-right">{member?.branch || "-"} / {member?.year || "-"}</span>
+                          <span className="text-gray-500">Phone</span>
+                          <span className="text-gray-300 text-right font-mono">{member?.phone || "N/A"}</span>
+                        </div>
+                      </div>
+                    ))}
+                    {getCoordinatorDetails(event).length === 0 && <span className="text-gray-500 text-sm">No coordinators assigned</span>}
+                  </div>
                 </div>
               ) : (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", marginTop: "5px" }}>
-                  {normalizeCoordinators(event.coordinators).map((name) => (
-                    <div key={name} style={{ position: "relative", display: "inline-block" }}>
-                      <span
-                        onMouseEnter={() => setHoveredCoordinator(`${event.id}:${name}`)}
-                        onMouseLeave={() => setHoveredCoordinator(null)}
-                        onFocus={() => setHoveredCoordinator(`${event.id}:${name}`)}
-                        onBlur={() => setHoveredCoordinator(null)}
-                        tabIndex={0}
-                        style={{
-                          background: "#007bff",
-                          color: "white",
-                          padding: "2px 10px",
-                          borderRadius: "12px",
-                          fontSize: "12px",
-                          cursor: "help",
-                          outline: "none",
-                        }}
-                      >
-                        {name}
-                      </span>
-
-                      {hoveredCoordinator === `${event.id}:${name}` && (
-                        <div
-                          style={{
-                            position: "absolute",
-                            left: "50%",
-                            top: "-8px",
-                            transform: "translate(-50%, -100%)",
-                            minWidth: "190px",
-                            background: "#111827",
-                            color: "#fff",
-                            padding: "8px 10px",
-                            borderRadius: "6px",
-                            fontSize: "12px",
-                            lineHeight: 1.4,
-                            boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
-                            zIndex: 20,
-                            whiteSpace: "pre-wrap",
-                          }}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-500 font-medium">Coordinators:</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {normalizeCoordinators(event.coordinators).map((name) => (
+                      <div key={name} className="relative inline-block">
+                        <span
+                          onMouseEnter={() => setHoveredCoordinator(`${event.id}:${name}`)}
+                          onMouseLeave={() => setHoveredCoordinator(null)}
+                          className="bg-gray-800 text-gray-300 border border-gray-700 px-2 py-0.5 rounded-full text-xs cursor-help hover:bg-gray-700 transition-colors"
                         >
-                          {getCoordinatorTooltipLines(name).map((line) => (
-                            <div key={line}>{line}</div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                  {normalizeCoordinators(event.coordinators).length === 0 && (
-                    <span style={{ color: "#888" }}>None</span>
-                  )}
+                          {name}
+                        </span>
+
+                        {hoveredCoordinator === `${event.id}:${name}` && (
+                          <div className="absolute left-1/2 bottom-full mb-2 -translate-x-1/2 w-48 bg-gray-900 border border-gray-700 text-gray-200 p-3 rounded-lg text-xs shadow-xl z-20">
+                            {getCoordinatorTooltipLines(name).map((line, i) => (
+                              <div key={i} className={`truncate ${i === 0 ? 'font-bold text-white mb-1 pb-1 border-b border-gray-700' : 'text-gray-400'}`}>{line}</div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    {normalizeCoordinators(event.coordinators).length === 0 && (
+                      <span className="text-xs text-gray-600">None</span>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
 
             {!isSingleEventView && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                  marginTop: "15px",
-                  borderTop: "1px solid #eee",
-                  paddingTop: "10px",
-                }}
-              >
+              <div className="flex flex-wrap items-center gap-3 mt-5 pt-4 border-t border-gray-800/80">
                 <button
                   onClick={() => eventToggle(event.id)}
-                  style={{
-                    backgroundColor: event.is_complete ? "#28a745" : "#6c757d",
-                    color: "white",
-                    border: "none",
-                    padding: "6px 12px",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${event.is_complete
+                      ? "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
+                      : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
+                    }`}
                 >
-                  {event.is_complete ? "✓ Completed" : "Mark Complete"}
+                  {event.is_complete ? "✓ Completed" : "Mark Done"}
                 </button>
 
                 {editingEventId === event.id ? (
                   <>
                     <button
                       onClick={() => saveEdit(event.id)}
-                      style={{
-                        backgroundColor: "#007bff",
-                        color: "white",
-                        border: "none",
-                        padding: "6px 12px",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        fontSize: "14px",
-                      }}
+                      className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-md text-sm font-medium transition-colors"
                     >
                       Save
                     </button>
                     <button
                       onClick={cancelEdit}
-                      style={{
-                        backgroundColor: "transparent",
-                        color: "#6c757d",
-                        border: "1px solid #6c757d",
-                        padding: "6px 12px",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        fontSize: "14px",
-                      }}
+                      className="px-4 py-1.5 bg-transparent border border-gray-600 text-gray-400 hover:text-white hover:border-gray-400 rounded-md text-sm font-medium transition-colors"
                     >
                       Cancel
                     </button>
                   </>
                 ) : (
-                  <button
-                    onClick={() => startEdit(event)}
-                    style={{
-                      backgroundColor: "transparent",
-                      color: "#007bff",
-                      border: "1px solid #007bff",
-                      padding: "6px 12px",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: "14px",
-                    }}
-                  >
-                    Edit
-                  </button>
+                  <>
+                    <button
+                      onClick={() => startEdit(event)}
+                      className="px-3 py-1.5 bg-transparent border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 rounded-md text-sm font-medium transition-colors"
+                    >
+                      Edit
+                    </button>
+                    <Link
+                      to={`/details/${event.id}`}
+                      className="px-3 py-1.5 bg-transparent border border-gray-700 text-gray-300 hover:bg-gray-800 hover:border-gray-500 rounded-md text-sm font-medium transition-colors"
+                    >
+                      Details
+                    </Link>
+                    <button
+                      onClick={() => {
+                        if (window.confirm(`Delete "${event.event_title}"?`)) {
+                          eventDelete(event.id);
+                        }
+                      }}
+                      className="ml-auto px-3 py-1.5 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 rounded-md text-sm font-medium transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </>
                 )}
-
-                <Link
-                  to={`/details/${event.id}`}
-                  style={{
-                    backgroundColor: "transparent",
-                    color: "#111827",
-                    border: "1px solid #111827",
-                    padding: "6px 12px",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                    textDecoration: "none",
-                  }}
-                >
-                  View Details
-                </Link>
-
-                <button
-                  onClick={() => {
-                    if (window.confirm(`Delete "${event.event_title}"?`)) {
-                      eventDelete(event.id);
-                    }
-                  }}
-                  style={{
-                    backgroundColor: "transparent",
-                    color: "#dc3545",
-                    border: "1px solid #dc3545",
-                    padding: "6px 12px",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                  }}
-                >
-                  Delete
-                </button>
-
-                <span
-                  style={{
-                    marginLeft: "auto",
-                    color: event.is_complete ? "green" : "orange",
-                    fontWeight: "bold",
-                    fontSize: "14px",
-                  }}
-                >
-                  {event.is_complete ? "Done" : "Pending"}
-                </span>
               </div>
             )}
           </div>
         ))}
 
         {eventsToRender.length === 0 && (
-          <p style={{ textAlign: "center", color: "#666" }}>
-            {isSingleEventView ? "Event not found." : "No events to show."}
-          </p>
+          <div className="text-center py-12 bg-gray-900/30 border border-gray-800 border-dashed rounded-xl">
+            <p className="text-gray-400 text-lg">{isSingleEventView ? "Event not found." : "No events match this filter."}</p>
+          </div>
         )}
       </div>
     </div>
