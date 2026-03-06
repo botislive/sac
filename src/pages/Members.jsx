@@ -2,6 +2,8 @@ import { useState } from "react"
 import { useAtom, useAtomValue } from "jotai"
 import { sacMemAtom, eventsAtom } from "../atoms/userAtom"
 import MemberForm from '../components/MemberForm'
+import ExportMenu from '../components/ExportMenu'
+import { exportMembersCSV, exportMembersPDF } from '../utils/exportUtils'
 
 function Members() {
   const [members] = useAtom(sacMemAtom)
@@ -24,23 +26,30 @@ function Members() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', position: 'relative' }}>
 
-      {/* Page header */}
-      <div>
-        <h1 style={{
-          fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '2rem',
-          color: 'var(--foreground)', letterSpacing: '-0.025em', margin: 0,
-        }}>
-          Members <span style={{ color: 'var(--accent)' }}>Directory</span>
-        </h1>
-        <p style={{ fontFamily: 'var(--font-body)', color: 'var(--muted-foreground)', marginTop: '0.375rem', fontSize: '0.9375rem' }}>
-          Manage and register SAC team members.
-        </p>
+      
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+        <div>
+          <h1 style={{
+            fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '2rem',
+            color: 'var(--foreground)', letterSpacing: '-0.025em', margin: 0,
+          }}>
+            Members <span style={{ color: 'var(--accent)' }}>Directory</span>
+          </h1>
+          <p style={{ fontFamily: 'var(--font-body)', color: 'var(--muted-foreground)', marginTop: '0.375rem', fontSize: '0.9375rem' }}>
+            Manage and register SAC team members.
+          </p>
+        </div>
+        <ExportMenu
+          label="Members"
+          onExportCSV={() => exportMembersCSV(members)}
+          onExportPDF={() => exportMembersPDF(members)}
+        />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1.5rem', alignItems: 'start' }}
         className="members-grid">
 
-        {/* Add Member panel */}
+        
         <div className="panel">
           <div className="panel-header">
             <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '1.0625rem', color: 'var(--foreground)', margin: 0 }}>
@@ -52,7 +61,7 @@ function Members() {
           </div>
         </div>
 
-        {/* Members list panel */}
+       
         <div className="panel" style={{ minHeight: 480 }}>
           <div className="panel-header">
             <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '1.0625rem', color: 'var(--foreground)', margin: 0 }}>
@@ -81,7 +90,7 @@ function Members() {
         </div>
       </div>
 
-      {/* Member Details Modal */}
+      
       {selectedMember && (() => {
         const events = getMemberEvents(selectedMember.name)
         return (
@@ -108,7 +117,7 @@ function Members() {
               }}
               onClick={e => e.stopPropagation()}
             >
-              {/* Modal header */}
+              
               <div style={{
                 padding: '1.5rem',
                 borderBottom: '1px solid var(--border)',
@@ -141,10 +150,10 @@ function Members() {
                 </button>
               </div>
 
-              {/* Modal body */}
+             
               <div style={{ padding: '1.5rem', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
 
-                {/* Upcoming Events */}
+                
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '0.875rem' }}>
                     <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block', boxShadow: 'var(--glow-sm)' }} />
@@ -178,7 +187,7 @@ function Members() {
                   )}
                 </div>
 
-                {/* Past Events */}
+               
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '0.875rem' }}>
                     <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
