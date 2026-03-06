@@ -91,8 +91,8 @@ function Home() {
           </div>
           <div className="panel-body" style={{ padding: '1.25rem 1.5rem' }}>
             {pieData.length > 0 ? (
-              <div style={{ height: 230 }}>
-                <ResponsiveContainer width="100%" height="100%">
+              <div style={{ height: 230, minHeight: 230, minWidth: 0 }}>
+                <ResponsiveContainer width="100%" height={230} minWidth={0} minHeight={230}>
                   <PieChart>
                     <Pie
                       data={pieData}

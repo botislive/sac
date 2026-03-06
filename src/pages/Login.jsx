@@ -3,25 +3,15 @@ import { useNavigate } from "react-router-dom"
 import { useAtom } from "jotai"
 import { authAtomWithStorage } from "../atoms/authAtom"
 
-function SacLogoLarge({ size = 72 }) {
+function SacLogoLarge({ size = 56 }) {
     return (
-        <svg width={size} height={size} viewBox="0 0 100 110" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="SAC Logo">
-            <path d="M50 4 L90 22 L90 60 Q90 85 50 106 Q10 85 10 60 L10 22 Z" fill="url(#shieldGradL)" stroke="url(#borderGradL)" strokeWidth="2" />
-            <defs>
-                <linearGradient id="shieldGradL" x1="0" y1="0" x2="100" y2="110" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stopColor="#7C3AED" />
-                    <stop offset="60%" stopColor="#4F46E5" />
-                    <stop offset="100%" stopColor="#2563EB" />
-                </linearGradient>
-                <linearGradient id="borderGradL" x1="0" y1="0" x2="100" y2="110" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stopColor="#A78BFA" />
-                    <stop offset="100%" stopColor="#60A5FA" />
-                </linearGradient>
-            </defs>
-            <text x="50" y="58" textAnchor="middle" fontFamily="'Space Grotesk', sans-serif" fontWeight="700" fontSize="38" fill="white" letterSpacing="-1">SAC</text>
-            <rect x="16" y="62" width="68" height="18" rx="3" fill="#2563EB" />
-            <text x="50" y="75" textAnchor="middle" fontFamily="'Inter', sans-serif" fontWeight="600" fontSize="9" fill="white" letterSpacing="1">STUDENT ACTIVITY</text>
-        </svg>
+        <img
+            src="/sac_logo.jpg"
+            alt="SAC Logo"
+            width={size}
+            height={size}
+            style={{ objectFit: 'cover', display: 'block', borderRadius: '10px' }}
+        />
     )
 }
 
@@ -82,7 +72,7 @@ function Login() {
                     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem',
                     background: 'radial-gradient(ellipse at top, rgba(245,158,11,0.04) 0%, transparent 60%)',
                 }}>
-                    <SacLogoLarge size={72} />
+                    <SacLogoLarge size={56} />
                     <div style={{ textAlign: 'center' }}>
                         <h1 style={{
                             fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.5rem',

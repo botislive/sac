@@ -9,10 +9,13 @@ function EventForm() {
     const clubList = useAtomValue(clubs)
 
     const [club_name, setClub_name] = useState("")
+    const [department, setDepartment] = useState("")
     const [event_title, setEvent_title] = useState("")
     const [event_date, setEvent_date] = useState("")
     const [searchTerm, setSearchTerm] = useState("")
     const [selectedCoordinators, setSelectedCoordinators] = useState([])
+
+    const allDepartments = [...new Set((clubList || []).map(c => c.department).filter(Boolean))]
 
     const filteredMembers = (members || []).filter(m =>
         m.name && m.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -26,11 +29,19 @@ function EventForm() {
         )
     }
 
+    const handleClubChange = (e) => {
+        const selected = e.target.value
+        setClub_name(selected)
+        const matchedClub = (clubList || []).find(c => c.name === selected)
+        setDepartment(matchedClub?.department || "")
+    }
+
     const handlesubmit = (e) => {
         e.preventDefault()
-        setEvents({ club_name, event_title, event_date, coordinators: selectedCoordinators })
+        setEvents({ club_name, department, event_title, event_date, coordinators: selectedCoordinators })
         toast.success("Event added successfully!")
         setClub_name("")
+        setDepartment("")
         setEvent_title("")
         setEvent_date("")
         setSelectedCoordinators([])
@@ -47,7 +58,7 @@ function EventForm() {
                         id="event-club"
                         className="select-dark"
                         value={club_name}
-                        onChange={e => setClub_name(e.target.value)}
+                        onChange={handleClubChange}
                         required
                     >
                         <option value="" disabled>— Choose a Club —</option>
@@ -55,6 +66,30 @@ function EventForm() {
                     </select>
                     <svg style={{ position: 'absolute', right: '0.875rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} width="14" height="14" fill="none" stroke="var(--muted-foreground)" strokeWidth="2" strokeLinecap="round"><polyline points="4 6 8 10 12 6" /></svg>
                 </div>
+            </div>
+
+            <div>
+                <label className="label-dark" htmlFor="event-department">Department</label>
+                <div style={{ position: 'relative' }}>
+                    <select
+                        id="event-department"
+                        className="select-dark"
+                        value={department}
+                        onChange={e => setDepartment(e.target.value)}
+                        required
+                    >
+                        <option value="" disabled>— Select Department —</option>
+                        {allDepartments.map(dept => (
+                            <option key={dept} value={dept}>{dept}</option>
+                        ))}
+                    </select>
+                    <svg style={{ position: 'absolute', right: '0.875rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} width="14" height="14" fill="none" stroke="var(--muted-foreground)" strokeWidth="2" strokeLinecap="round"><polyline points="4 6 8 10 12 6" /></svg>
+                </div>
+                {club_name && department && (
+                    <p style={{ marginTop: '0.35rem', fontSize: '0.75rem', color: 'var(--muted-foreground)', fontFamily: 'var(--font-mono)' }}>
+                        Auto-filled from club · you can override
+                    </p>
+                )}
             </div>
 
             <div>

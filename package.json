@@ -11,10 +11,13 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.1",
+    "docxtemplater": "^3.68.3",
+    "file-saver": "^2.0.5",
     "framer-motion": "^12.35.0",
     "jotai": "^2.18.0",
     "jspdf": "^4.2.0",
     "jspdf-autotable": "^5.0.7",
+    "pizzip": "^3.2.0",
     "react": "^19.2.0",
     "react-calendar": "^6.0.0",
     "react-dom": "^19.2.0",

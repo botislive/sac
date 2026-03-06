@@ -9,6 +9,7 @@ function Members() {
   const [members] = useAtom(sacMemAtom)
   const allEvents = useAtomValue(eventsAtom)
   const [selectedMember, setSelectedMember] = useState(null)
+  const [memberSearch, setMemberSearch] = useState("")
 
   const getMemberEvents = (memberName) => {
     const memberEvents = allEvents.filter(event => {
@@ -23,10 +24,21 @@ function Members() {
     }
   }
 
+  const filteredMembers = memberSearch.trim()
+    ? members.filter(m => {
+      const q = memberSearch.toLowerCase()
+      return (
+        (m.name || "").toLowerCase().includes(q) ||
+        (m.post || "").toLowerCase().includes(q) ||
+        (m.branch || "").toLowerCase().includes(q)
+      )
+    })
+    : members
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', position: 'relative' }}>
 
-      
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h1 style={{
@@ -49,7 +61,7 @@ function Members() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1.5rem', alignItems: 'start' }}
         className="members-grid">
 
-        
+
         <div className="panel">
           <div className="panel-header">
             <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '1.0625rem', color: 'var(--foreground)', margin: 0 }}>
@@ -61,22 +73,55 @@ function Members() {
           </div>
         </div>
 
-       
+
         <div className="panel" style={{ minHeight: 480 }}>
-          <div className="panel-header">
-            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '1.0625rem', color: 'var(--foreground)', margin: 0 }}>
-              Directory
-            </h2>
-            <span className="badge-amber">{members.length} Total</span>
+          <div className="panel-header" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '0.625rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '1.0625rem', color: 'var(--foreground)', margin: 0 }}>
+                Directory
+              </h2>
+              <span className="badge-amber">
+                {memberSearch ? `${filteredMembers.length} / ${members.length}` : `${members.length} Total`}
+              </span>
+            </div>
+
+            {/* Search bar */}
+            <div style={{ position: 'relative' }}>
+              <svg
+                style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
+                width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search by name, role, branch…"
+                value={memberSearch}
+                onChange={(e) => setMemberSearch(e.target.value)}
+                style={{ paddingLeft: '2.25rem', paddingRight: memberSearch ? '2.25rem' : '0.875rem' }}
+                className="w-full bg-gray-900/60 border border-gray-700 rounded-lg py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
+              />
+              {memberSearch && (
+                <button
+                  onClick={() => setMemberSearch("")}
+                  style={{ position: 'absolute', right: '0.625rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: '0.125rem', lineHeight: 1 }}
+                  aria-label="Clear search"
+                >
+                  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#6b7280" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
           </div>
           <div className="panel-body">
-            {members.length > 0 ? (
+            {filteredMembers.length > 0 ? (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '0.875rem' }}>
-                {members.map((member, i) => (
+                {filteredMembers.map((member, i) => (
                   <MemberCard key={i} member={member} onClick={() => setSelectedMember(member)} />
                 ))}
               </div>
-            ) : (
+            ) : members.length === 0 ? (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 280 }}>
                 <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="var(--muted-foreground)" strokeWidth="1.2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -85,12 +130,27 @@ function Members() {
                   No members registered yet.
                 </p>
               </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 200 }}>
+                <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="var(--muted-foreground)" strokeWidth="1.2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+                </svg>
+                <p style={{ fontFamily: 'var(--font-body)', color: 'var(--muted-foreground)', marginTop: '0.75rem', fontSize: '0.9375rem' }}>
+                  No members matching &ldquo;{memberSearch}&rdquo;
+                </p>
+                <button
+                  onClick={() => setMemberSearch("")}
+                  style={{ marginTop: '0.5rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent)', fontSize: '0.8125rem', fontFamily: 'var(--font-body)' }}
+                >
+                  Clear search
+                </button>
+              </div>
             )}
           </div>
         </div>
       </div>
 
-      
+
       {selectedMember && (() => {
         const events = getMemberEvents(selectedMember.name)
         return (
@@ -117,7 +177,7 @@ function Members() {
               }}
               onClick={e => e.stopPropagation()}
             >
-              
+
               <div style={{
                 padding: '1.5rem',
                 borderBottom: '1px solid var(--border)',
@@ -150,10 +210,10 @@ function Members() {
                 </button>
               </div>
 
-             
+
               <div style={{ padding: '1.5rem', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
 
-                
+
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '0.875rem' }}>
                     <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block', boxShadow: 'var(--glow-sm)' }} />
@@ -187,7 +247,7 @@ function Members() {
                   )}
                 </div>
 
-               
+
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '0.875rem' }}>
                     <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
