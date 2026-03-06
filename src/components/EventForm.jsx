@@ -1,154 +1,172 @@
-import { useState } from "react";
-import { setEventsAtom, sacMemAtom, clubs } from "../atoms/userAtom";
-import { useAtom, useAtomValue } from "jotai";
-import { toast } from "sonner";
+import { useState } from "react"
+import { setEventsAtom, sacMemAtom, clubs } from "../atoms/userAtom"
+import { useAtom, useAtomValue } from "jotai"
+import { toast } from "sonner"
 
 function EventForm() {
-    const [members] = useAtom(sacMemAtom);
-    const [, setEvents] = useAtom(setEventsAtom);
-    const clubList = useAtomValue(clubs);
+    const [members] = useAtom(sacMemAtom)
+    const [, setEvents] = useAtom(setEventsAtom)
+    const clubList = useAtomValue(clubs)
 
-    const [club_name, setClub_name] = useState("");
-    const [event_title, setEvent_title] = useState("");
-    const [event_date, setEvent_date] = useState("");
+    const [club_name, setClub_name] = useState("")
+    const [event_title, setEvent_title] = useState("")
+    const [event_date, setEvent_date] = useState("")
+    const [searchTerm, setSearchTerm] = useState("")
+    const [selectedCoordinators, setSelectedCoordinators] = useState([])
 
-    const [searchTerm, setSearchTerm] = useState("");
-    const [selectedCoordinators, setSelectedCoordinators] = useState([]);
-
-    const filteredMembers = (members || []).filter(member =>
-        member.name && member.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredMembers = (members || []).filter(m =>
+        m.name && m.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
 
     const toggleCoordinator = (member) => {
-        const isAlreadySelected = selectedCoordinators.some(s => s.name === member.name);
-
-        if (isAlreadySelected) {
-            setSelectedCoordinators(selectedCoordinators.filter(s => s.name !== member.name));
-        } else {
-            setSelectedCoordinators([...selectedCoordinators, member]);
-        }
-    };
+        const isSelected = selectedCoordinators.some(s => s.name === member.name)
+        setSelectedCoordinators(isSelected
+            ? selectedCoordinators.filter(s => s.name !== member.name)
+            : [...selectedCoordinators, member]
+        )
+    }
 
     const handlesubmit = (e) => {
-        e.preventDefault();
-
-        const eventData = {
-            club_name,
-            event_title,
-            event_date,
-            coordinators: selectedCoordinators
-        };
-
-        setEvents(eventData);
-        toast.success("Event added successfully!");
-
-        setClub_name("");
-        setEvent_title("");
-        setEvent_date("");
-        setSelectedCoordinators([]);
-        setSearchTerm("");
-    };
+        e.preventDefault()
+        setEvents({ club_name, event_title, event_date, coordinators: selectedCoordinators })
+        toast.success("Event added successfully!")
+        setClub_name("")
+        setEvent_title("")
+        setEvent_date("")
+        setSelectedCoordinators([])
+        setSearchTerm("")
+    }
 
     return (
-        <form onSubmit={handlesubmit} className="space-y-5">
+        <form onSubmit={handlesubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.125rem' }}>
+
             <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Select Club</label>
-                <select
-                    value={club_name}
-                    onChange={(e) => setClub_name(e.target.value)}
-                    required
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                >
-                    <option value="" disabled>-- Choose a Club --</option>
-                    {(clubList || []).map((club) => (
-                        <option key={club.name} value={club.name}>{club.name}</option>
-                    ))}
-                </select>
+                <label className="label-dark" htmlFor="event-club">Select Club</label>
+                <div style={{ position: 'relative' }}>
+                    <select
+                        id="event-club"
+                        className="select-dark"
+                        value={club_name}
+                        onChange={e => setClub_name(e.target.value)}
+                        required
+                    >
+                        <option value="" disabled>— Choose a Club —</option>
+                        {(clubList || []).map(club => <option key={club.name} value={club.name}>{club.name}</option>)}
+                    </select>
+                    <svg style={{ position: 'absolute', right: '0.875rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} width="14" height="14" fill="none" stroke="var(--muted-foreground)" strokeWidth="2" strokeLinecap="round"><polyline points="4 6 8 10 12 6" /></svg>
+                </div>
             </div>
 
             <div>
-                <label htmlFor="event_title" className="block text-sm font-medium text-gray-300 mb-1">Event Title</label>
+                <label className="label-dark" htmlFor="event-title">Event Title</label>
                 <input
-                    id="event_title"
+                    id="event-title"
+                    className="input-dark"
                     value={event_title}
-                    onChange={(e) => setEvent_title(e.target.value)}
-                    placeholder='Enter the event name'
+                    onChange={e => setEvent_title(e.target.value)}
+                    placeholder="Enter the event name"
                     type="text"
                     required
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-500"
                 />
             </div>
 
             <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Event Date</label>
+                <label className="label-dark" htmlFor="event-date">Event Date</label>
                 <input
+                    id="event-date"
+                    className="input-dark"
                     value={event_date}
-                    onChange={(e) => setEvent_date(e.target.value)}
+                    onChange={e => setEvent_date(e.target.value)}
                     type="date"
                     required
-                    style={{ colorScheme: "dark" }}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    style={{ colorScheme: 'dark' }}
                 />
             </div>
 
+            {/* Coordinator selector */}
             <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Add Coordinators</label>
+                <label className="label-dark">Coordinators</label>
+
+                {/* Selected chips */}
+                {selectedCoordinators.length > 0 && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem', marginBottom: '0.625rem' }}>
+                        {selectedCoordinators.map(m => (
+                            <span key={m.name} className="badge-amber" style={{ gap: '0.375rem' }}>
+                                {m.name}
+                                <button
+                                    type="button"
+                                    onClick={() => toggleCoordinator(m)}
+                                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent)', padding: 0, lineHeight: 1, fontSize: '1rem' }}
+                                    aria-label={`Remove ${m.name}`}
+                                >×</button>
+                            </span>
+                        ))}
+                    </div>
+                )}
+
+                {/* Search box */}
                 <input
                     type="text"
-                    placeholder="Search members..."
+                    placeholder="Search members…"
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-t-lg px-4 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-500"
+                    onChange={e => setSearchTerm(e.target.value)}
+                    className="input-dark"
+                    style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}
                 />
 
-                <div className="border border-t-0 border-gray-700 max-h-40 overflow-y-auto p-2 bg-gray-900/50 rounded-b-lg space-y-1">
-                    {filteredMembers.map((member) => (
-                        <label
-                            key={member.name}
-                            htmlFor={`coord-${member.name}`}
-                            className="flex items-center gap-3 p-2 hover:bg-gray-800 rounded-md cursor-pointer transition-colors"
-                        >
-                            <input
-                                type="checkbox"
-                                id={`coord-${member.name}`}
-                                checked={selectedCoordinators.some(s => s.name === member.name)}
-                                onChange={() => toggleCoordinator(member)}
-                                className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-offset-gray-900"
-                            />
-
-                            <div className="flex flex-col">
-                                <span className="text-sm font-medium text-gray-200">{member.name}</span>
-                                <span className="text-xs text-gray-500">{member.post}</span>
-                            </div>
-                        </label>
-                    ))}
-                    {filteredMembers.length === 0 && <p className="text-xs text-center text-gray-500 py-2">No members found</p>}
-                </div>
-
-                <div className="mt-3 flex flex-wrap gap-2">
-                    {selectedCoordinators.map(member => (
-                        <span key={member.name} className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-1 rounded text-xs flex items-center gap-1">
-                            {member.name}
-                            <button
-                                type="button"
-                                onClick={() => toggleCoordinator(member)}
-                                className="text-blue-400 hover:text-white ml-1 font-bold"
+                {/* Member list */}
+                <div style={{
+                    border: '1px solid var(--border)', borderTop: 'none',
+                    borderBottomLeftRadius: '0.5rem', borderBottomRightRadius: '0.5rem',
+                    maxHeight: 160, overflowY: 'auto',
+                    background: 'rgba(10,10,15,0.80)',
+                    backdropFilter: 'blur(8px)',
+                    padding: '0.375rem',
+                }}>
+                    {filteredMembers.map(member => {
+                        const isSelected = selectedCoordinators.some(s => s.name === member.name)
+                        return (
+                            <label
+                                key={member.name}
+                                htmlFor={`coord-${member.name}`}
+                                style={{
+                                    display: 'flex', alignItems: 'center', gap: '0.625rem',
+                                    padding: '0.5rem 0.625rem',
+                                    borderRadius: '0.375rem',
+                                    cursor: 'pointer',
+                                    background: isSelected ? 'rgba(245,158,11,0.08)' : 'transparent',
+                                    transition: 'background 150ms',
+                                }}
+                                onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = 'rgba(255,255,255,0.04)' }}
+                                onMouseLeave={e => { e.currentTarget.style.background = isSelected ? 'rgba(245,158,11,0.08)' : 'transparent' }}
                             >
-                                &times;
-                            </button>
-                        </span>
-                    ))}
+                                <input
+                                    type="checkbox"
+                                    id={`coord-${member.name}`}
+                                    checked={isSelected}
+                                    onChange={() => toggleCoordinator(member)}
+                                    style={{ accentColor: 'var(--accent)', width: 14, height: 14, flexShrink: 0 }}
+                                />
+                                <div>
+                                    <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.875rem', fontWeight: 500, color: isSelected ? 'var(--accent)' : 'var(--foreground)' }}>{member.name}</span>
+                                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--muted-foreground)', display: 'block' }}>{member.post}</span>
+                                </div>
+                            </label>
+                        )
+                    })}
+                    {filteredMembers.length === 0 && (
+                        <p style={{ textAlign: 'center', fontFamily: 'var(--font-body)', fontSize: '0.8125rem', color: 'var(--muted-foreground)', padding: '0.75rem', margin: 0 }}>
+                            No members found
+                        </p>
+                    )}
                 </div>
             </div>
 
-            <button
-                type='submit'
-                className="w-full mt-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-medium py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
-            >
+            <button id="btn-submit-event" type="submit" className="btn-primary" style={{ width: '100%', marginTop: '0.25rem' }}>
                 Submit Event
             </button>
         </form>
-    );
+    )
 }
 
-export default EventForm;
+export default EventForm
