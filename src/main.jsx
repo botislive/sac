@@ -8,6 +8,7 @@ import Events from './pages/Events.jsx'
 import Members from './pages/Members.jsx'
 import Details from './pages/Details.jsx'
 import Login from './pages/Login.jsx'
+import Resources from './pages/Resources.jsx'
 import Layout from './components/Layout.jsx'
 
 createRoot(document.getElementById('root')).render(
@@ -22,6 +23,7 @@ createRoot(document.getElementById('root')).render(
                 <Route path='/landingPage' element={<LandingPage />} />
                 <Route path='/events' element={<Events />} />
                 <Route path='/members' element={<Members />} />
+                <Route path='/resources' element={<Resources />} />
                 <Route path='/details/:event_id' element={<Details />} />
             </Route>
 

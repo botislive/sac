@@ -128,6 +128,36 @@ function Home() {
           </div>
         </div>
 
+        {/* Recent Activity — Quick Feed */}
+        <div className="panel">
+          <div className="panel-header">
+            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '1.0625rem', color: 'var(--foreground)', margin: 0 }}>
+              Recent Activity
+            </h2>
+            <span className="badge-muted" style={{ fontSize: '0.7rem' }}>Live</span>
+          </div>
+          <div className="panel-body" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {[...events, ...members].sort((a, b) => (b.id || 0) > (a.id || 0) ? 1 : -1).slice(0, 4).map((item, i) => (
+              <div key={i} style={{ display: 'flex', gap: '0.875rem' }}>
+                <div style={{
+                  width: '8px', height: '8px', borderRadius: '50%',
+                  background: item.event_title ? 'var(--accent)' : '#10b981',
+                  marginTop: '6px', flexShrink: 0,
+                  boxShadow: item.event_title ? '0 0 8px rgba(245,158,11,0.4)' : 'none'
+                }} />
+                <div>
+                  <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--foreground)', fontWeight: 500 }}>
+                    {item.event_title ? `New Event: ${item.event_title}` : `New Member: ${item.name}`}
+                  </p>
+                  <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>
+                    {item.event_title ? `Club: ${item.club_name}` : `Role: ${item.post}`}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Right column — members + upcoming events stacked */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 

@@ -1,9 +1,10 @@
 import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import { nanoid } from "nanoid";
 
 
 
-export const sacMemAtom = atom([{
+export const sacMemAtom = atomWithStorage("sac_members", [{
     name: "Tushar",
     post: "Club Manager",
     year: "III",
@@ -18,7 +19,7 @@ export const sacMemAtom = atom([{
 }
 ]);
 
-export const eventsAtom = atom([{
+export const eventsAtom = atomWithStorage("sac_events", [{
     id: nanoid(),
     club_name: "Music Club",
     event_title: "Sizziling Saturday",

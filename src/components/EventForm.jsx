@@ -118,11 +118,11 @@ function EventForm() {
                 />
             </div>
 
-            {/* Coordinator selector */}
+        
             <div>
                 <label className="label-dark">Coordinators</label>
 
-                {/* Selected chips */}
+               
                 {selectedCoordinators.length > 0 && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem', marginBottom: '0.625rem' }}>
                         {selectedCoordinators.map(m => (
@@ -139,7 +139,7 @@ function EventForm() {
                     </div>
                 )}
 
-                {/* Search box */}
+               
                 <input
                     type="text"
                     placeholder="Search members…"
@@ -149,7 +149,7 @@ function EventForm() {
                     style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}
                 />
 
-                {/* Member list */}
+               
                 <div style={{
                     border: '1px solid var(--border)', borderTop: 'none',
                     borderBottomLeftRadius: '0.5rem', borderBottomRightRadius: '0.5rem',

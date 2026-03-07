@@ -161,7 +161,7 @@ function EventDetails({ eventId = null }) {
 
       {!isSingleEventView && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-          {/* Status filter tabs */}
+
           <div className="flex bg-gray-900/50 p-1 rounded-lg w-fit border border-gray-800">
             {["all", "upcoming", "completed"].map((f) => (
               <button
@@ -177,7 +177,7 @@ function EventDetails({ eventId = null }) {
             ))}
           </div>
 
-          {/* Search bar */}
+
           <div style={{ position: 'relative', flex: '1', minWidth: 200 }}>
             <svg
               style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
@@ -206,7 +206,7 @@ function EventDetails({ eventId = null }) {
             )}
           </div>
 
-          {/* Live results count */}
+
           {eventSearch && (
             <span style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>
               {displayedEvents.length} result{displayedEvents.length !== 1 ? 's' : ''}
@@ -293,7 +293,7 @@ function EventDetails({ eventId = null }) {
                 </div>
               </div>
             ) : (
-              /* ── Card Header: Title + Status ── */
+
               <div style={{ padding: '1.25rem 1.5rem 0 1.5rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
                   <h3 style={{
@@ -313,14 +313,14 @@ function EventDetails({ eventId = null }) {
                   )}
                 </div>
 
-                {/* ── Metadata Chips ── */}
+
                 <div style={{
                   display: 'flex',
                   flexWrap: 'wrap',
                   gap: '0.5rem',
                   marginTop: '0.875rem',
                 }}>
-                  {/* Club chip */}
+
                   <span style={{
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -343,7 +343,7 @@ function EventDetails({ eventId = null }) {
                     {event.club_name}
                   </span>
 
-                  {/* Department chip */}
+
                   {event.department && (
                     <span style={{
                       display: 'inline-flex',
@@ -366,7 +366,7 @@ function EventDetails({ eventId = null }) {
                     </span>
                   )}
 
-                  {/* Date chip */}
+
                   <span style={{
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -392,7 +392,7 @@ function EventDetails({ eventId = null }) {
               </div>
             )}
 
-            {/* ── Coordinators Section ── */}
+
             <div style={{
               padding: '1rem 1.5rem',
               ...(editingEventId !== event.id && !isSingleEventView ? {
@@ -577,7 +577,7 @@ function EventDetails({ eventId = null }) {
               )}
             </div>
 
-            {/* ── Card Footer: Action Buttons ── */}
+
             {!isSingleEventView && (
               <div style={{
                 padding: '0.875rem 1.5rem',
@@ -589,9 +589,9 @@ function EventDetails({ eventId = null }) {
                 gap: '0.75rem',
                 flexWrap: 'wrap',
               }}>
-                {/* Left group: primary actions */}
+
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  {/* Status toggle */}
+
                   <button
                     onClick={() => {
                       eventToggle(event.id);
@@ -639,7 +639,7 @@ function EventDetails({ eventId = null }) {
                     {event.is_complete ? "Completed" : "Mark Done"}
                   </button>
 
-                  {/* Vertical divider */}
+
                   <div style={{ width: '1px', height: '1.5rem', background: 'var(--border)', margin: '0 0.25rem' }} />
 
                   {editingEventId === event.id ? (
@@ -755,7 +755,7 @@ function EventDetails({ eventId = null }) {
                   )}
                 </div>
 
-                {/* Right group: destructive action */}
+
                 {editingEventId !== event.id && (
                   <button
                     onClick={() => {

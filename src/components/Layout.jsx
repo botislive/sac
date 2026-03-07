@@ -3,6 +3,7 @@ import { Outlet, Link, useLocation, Navigate } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { authAtomWithStorage } from '../atoms/authAtom'
 import { AnimatePresence, motion } from 'framer-motion'
+import CommandPalette from './CommandPalette.jsx'
 
 function SacLogo({ size = 30 }) {
     return (
@@ -29,6 +30,7 @@ function Layout() {
         { name: 'Dashboard', href: '/' },
         { name: 'Events Log', href: '/events' },
         { name: 'Members Log', href: '/members' },
+        { name: 'Resources', href: '/resources' },
     ]
 
     const handleLogout = () => {
@@ -38,8 +40,9 @@ function Layout() {
 
     return (
         <div className="min-h-screen" style={{ backgroundColor: 'var(--background)' }}>
+            <CommandPalette />
 
-            {/* Ambient Background Orbs */}
+
             <div
                 aria-hidden="true"
                 style={{
@@ -59,7 +62,7 @@ function Layout() {
                 }}
             />
 
-            {/* ── TOP NAVBAR ──────────────────────────────────── */}
+
             <header
                 style={{
                     position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,

@@ -242,3 +242,100 @@ export const generateCircular = async (event, members = []) => {
         throw error;
     }
 };
+
+export const generatePermissionLetter = async (event, members = []) => {
+    try {
+        const { default: jsPDF } = await import("jspdf");
+        const doc = new jsPDF();
+        const safeTitle = (event.event_title || "event").replace(/[^a-z0-9]/gi, '_').toLowerCase();
+
+        // Styles
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.text("VIGNAN'S INSTITUTE OF INFORMATION TECHNOLOGY (AUTONOMOUS)", 105, 20, { align: "center" });
+
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text("Beside VSEZ, Duvvada, Visakhapatnam - 530049", 105, 26, { align: "center" });
+        doc.line(20, 30, 190, 30);
+
+        // Header info
+        doc.setFont("helvetica", "bold");
+        doc.text(`Date: ${new Date().toLocaleDateString("en-IN")}`, 160, 40);
+
+        doc.text("To,", 20, 50);
+        doc.setFont("helvetica", "normal");
+        doc.text("The Director/Principal,", 20, 55);
+        doc.text("VIIT (A),", 20, 60);
+        doc.text("Duvvada, Visakhapatnam.", 20, 65);
+
+        // Subject
+        doc.setFont("helvetica", "bold");
+        doc.text(`Subject: Permission to conduct "${event.event_title}" - Reg.`, 20, 80);
+
+        // Body
+        doc.setFont("helvetica", "normal");
+        const bodyText = `Respected Sir/Madam,\n\n We, the student members of the "${event.club_name}" from the Department of ${event.department || 'Student Affairs'}, are planning to organize an event titled "${event.event_title}" on ${event.date || '[Date TBD]'}.\n\nThis event aims to provide a platform for students to showcase their talents and improve their leadership skills. We request you to kindly grant us permission to proceed with the arrangements and use the required facilities (Auditorium/Seminar Hall) for the same.\n\nThanking you, Sir.`;
+
+        const splitText = doc.splitTextToSize(bodyText, 170);
+        doc.text(splitText, 20, 95);
+
+        // Footer
+        doc.setFont("helvetica", "bold");
+        doc.text("Yours Sincerely,", 20, 150);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Coordinators, ${event.club_name}`, 20, 160);
+
+        if (event.coordinators && event.coordinators.length > 0) {
+            const coordNames = event.coordinators.map(c => typeof c === 'string' ? c : c.name).join(", ");
+            doc.setFontSize(9);
+            doc.text(`(${coordNames})`, 20, 165);
+        }
+
+        doc.save(`Permission_${safeTitle}.pdf`);
+        return true;
+    } catch (error) {
+        console.error("Error generating permission letter:", error);
+        throw error;
+    }
+};
+
+export const generateBudgetReport = async (event) => {
+    try {
+        const { default: jsPDF } = await import("jspdf");
+        const { default: autoTable } = await import("jspdf-autotable");
+        const doc = new jsPDF();
+        const safeTitle = (event.event_title || "event").replace(/[^a-z0-9]/gi, '_').toLowerCase();
+
+        doc.setFont("helvetica", "bold");
+        doc.text("PROPOSED BUDGET ESTIMATION", 105, 20, { align: "center" });
+        doc.setFontSize(12);
+        doc.text(`${event.club_name} - ${event.event_title}`, 105, 30, { align: "center" });
+
+        const budgetData = [
+            ["1", "Decorations & Banners", "Proposed", "2,500.00"],
+            ["2", "Guest Honorarium", "Estimated", "5,000.00"],
+            ["3", "Certificates & Prizes", "Proposed", "1,500.00"],
+            ["4", "Refreshments (Students/Faculty)", "Proposed", "3,000.00"],
+            ["5", "Stationery & Miscellaneous", "Proposed", "1,000.00"],
+        ];
+
+        autoTable(doc, {
+            startY: 40,
+            head: [['S.No', 'Description', 'Type', 'Amount (INR)']],
+            body: budgetData,
+            theme: 'striped',
+            headStyles: { fillColor: [245, 158, 11] }, // Amber accent
+        });
+
+        const finalY = doc.lastAutoTable.finalY + 10;
+        doc.setFont("helvetica", "bold");
+        doc.text("Total Estimated Budget: INR 13,000.00", 190, finalY, { align: "right" });
+
+        doc.save(`Budget_${safeTitle}.pdf`);
+        return true;
+    } catch (error) {
+        console.error("Error generating budget report:", error);
+        throw error;
+    }
+};
